@@ -8,7 +8,9 @@
             [keechma-devtools.subscriptions :refer [subscriptions]]
             [keechma-devtools.edb :refer [edb-schema]]
             [keechma-devtools.datasources :refer [datasources]]
-            [keechma-devtools.forms :as keechma-devtools-forms]))
+            [keechma-devtools.forms :as keechma-devtools-forms]
+            [keechma.toolbox.css.app :as css]
+            [keechma-devtools.stylesheets :refer [stylesheet]]))
 
 (def app-definition
   (-> {:components    ui
@@ -16,7 +18,8 @@
        :subscriptions subscriptions
        :html-element  (.getElementById js/document "app")}
       (dataloader/install datasources edb-schema)
-      (forms/install keechma-devtools-forms/forms keechma-devtools-forms/forms-automount-fns)))
+      (forms/install keechma-devtools-forms/forms keechma-devtools-forms/forms-automount-fns)
+      (css/install (stylesheet))))
 
 (defonce running-app (clojure.core/atom nil))
 

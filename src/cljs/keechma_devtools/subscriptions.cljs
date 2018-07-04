@@ -9,12 +9,26 @@
     (reaction
      (get-in @app-db-atom (flatten [:kv key])))))
 
+(defn row-dimensions [app-db-atom]
+  (reaction
+   (get-in @app-db-atom [:kv :row-dimensions])))
+
+(defn event-expanded? [app-db-atom id]
+  (reaction
+   (contains? (set (get-in @app-db-atom [:kv :expanded-event-ids])) id)))
+
 (defn events [app-db-atom]
   (reaction
-   (let [app-db @app-db-atom
-         app-id (get-in app-db [:kv :events :active])
-         events (get-in app-db [:kv :events :app app-id :events])]
-     events)))
+   (let [events (get-in @app-db-atom [:kv :events])
+         app-name (get-in events [:state :name])
+         app-versions (get-in events [:state :versions])]
+     (mapv
+      (fn [v]
+        (let [app (get-in events [:versions v])]
+          (assoc app :name [app-name v])))
+          app-versions))))
 
 (def subscriptions
-  {:events events})
+  {:events events
+   :event-expanded? event-expanded?
+   :row-dimensions row-dimensions})

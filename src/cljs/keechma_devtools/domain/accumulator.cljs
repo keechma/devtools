@@ -1,22 +1,21 @@
-(ns keechma-devtools.domain.accumulator)
-
-(defn e-path [& args]
-  (concat [:kv :events] (vec args)))
+(ns keechma-devtools.domain.accumulator
+  (:require [clojure.string :as str]
+            [fipp.edn :as fipp-edn]))
 
 (defn event-matches? [ev-keys ev-match e]
   (let [ev-values (map (fn [k] (get e k)) ev-keys)]
     (= ev-match ev-values)))
-
-(defn event-has-registered-app? [store e]
-  (let [app-version (get-in e [:app :version])]
-    (and (= (get-in e [:app :name]) (get-in store [:state :name]))
-         (get-in store [:versions app-version]))))
 
 (defn on-event-match [ev-keys ev-match handler]
   (fn [store e]
     (if (event-matches? ev-keys ev-match (:event e))
       (handler store e)
       store)))
+
+(defn event-has-registered-app? [store e]
+  (let [app-version (get-in e [:app :version])]
+    (and (= (get-in e [:app :name]) (get-in store [:state :name]))
+         (get-in store [:versions app-version]))))
 
 (defn on-app-start-register-app-version [store e]
   (let [app-name (get-in e [:app :name])
@@ -34,11 +33,13 @@
                :events []})))
 
 (defn on-app-start-remove-stale-app-versions [store e]
-  (let [active-versions (vec (take-last 2 (get-in store [:state :versions])))
-        active-app-stores (select-keys (:versions store) active-versions)]
-    (-> store
-        (assoc-in [:state :versions] active-versions)
-        (assoc :versions active-app-stores))))
+  (if (= 2 (count (get-in store [:state :versions])))
+    store
+    (let [active-versions (vec (take-last 2 (get-in store [:state :versions])))
+          active-app-stores (select-keys (:versions store) active-versions)]
+      (-> store
+          (assoc-in [:state :versions] active-versions)
+          (assoc :versions active-app-stores)))))
 
 (def on-app-start
   (on-event-match
@@ -67,13 +68,15 @@
          (assoc-in store [:versions app-version :running-controllers] running-controllers)
          store)))))
 
+(defn process-event-payload [event]
+  (update event :payload #(str/trim (with-out-str (fipp-edn/pprint %)))))
+
 (defn store-event-if-app-exists [store e]
   (let [app-version (get-in e [:app :version])
         event (:event e)]
     (if (event-has-registered-app? store e)
-      (update-in store [:versions app-version :events] conj event)
+      (update-in store [:versions app-version :events] conj (process-event-payload event))
       store)))
-
 
 (defn store-event [store e]
   (-> store
