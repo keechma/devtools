@@ -44,13 +44,13 @@
     (let [controller-name (first (:name e))
           controller-action (last (:name e))]
       [:span 
-       "component/"
+       "component "
        [:b (str topic)]
        [:i.fa.fa-chevron-circle-right.mx1]
        [:span {:style {:color (graph/generate-color-from-term controller-name)}}
-        "controller/"
+        "controller "
         [:b (str controller-name)]
-        "/" (str controller-action)]])))
+        "[" (str controller-action) "]"]])))
 
 (defn render-app-ev [e]
   (let [topic (:topic e)]
@@ -61,10 +61,10 @@
          [:b "app"]
          [:i.fa.fa-chevron-circle-right.mx1]
          [:span {:style {:color (graph/generate-color-from-term controller-name)}}
-          "controller/"
+          "controller "
           [:b (str controller-name)]
-          "/" (str controller-action)]])
-      [:span.c-asbestos (str (:type e) "/" (or (:topic e) "-") "/" (:name e))])))
+          "[" (str controller-action) "]"]])
+      [:span.c-asbestos (str (:type e) " / " (or (:topic e) "-") " / " (:name e))])))
 
 (defn get-controller-lifecycle-or-action [e]
   (let [name (:name e)]
@@ -82,24 +82,24 @@
        (when lifecycle
          [-lifecycle-label {:style {:background controller-color}} "LIFECYCLE"])
        [:i.fa.fa-chevron-circle-right.mr1]
-       "controller/"
+       "controller "
        [:b (str topic)]
-       "/"
-       (str action)]
+       "["(str action) "]"]
       (let [target-ev (:name e)
             target-controller (first target-ev)
             target-action (last target-ev)]
         [:span
          [:span {:style {:color controller-color}}
-          "controller/"
+          "controller "
           [:b (str topic)]
           [:i.fa.fa-chevron-circle-right.mx1]]
          [:br]
          [:span {:style {:color (graph/generate-color-from-term target-controller)}}
-          "controller/"
+          "controller "
           [:b (str target-controller)]
-          "/"
-          (str target-action)]
+          "["
+          (str target-action)
+          "]"]
          ]))))
 
 (defn render-pause-ev [e]
@@ -110,7 +110,7 @@
   [:span
    [:b "router"
     [:i.fa.fa-chevron-circle-right.mx1]
-    ":app/" (:name e)]])
+    ":app[" (:name e) "]"]])
 
 (defn inner-render [ctx props app-name e expanded?]
   (let [type (:type e)
