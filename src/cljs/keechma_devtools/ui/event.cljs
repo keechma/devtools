@@ -10,7 +10,7 @@
    [keechma.toolbox.util :refer [class-names]]))
 
 (defelement -event-wrap
-  :class [:monospaced :h5 :bd-clouds :py2]
+  :class [:monospaced :h6 :bd-clouds :py2]
   :style [{:border-bottom-width "1px"
            :border-bottom-style "solid"}
           [:&:hover {:background "#f9f9f9"}]
@@ -103,7 +103,7 @@
          ]))))
 
 (defn render-pause-ev [e]
-  (let [[batch-num timestamp] (:name e)]
+  (let [[batch-num timestamp] (:payload e)]
     [-event-batch-label "BATCH #" batch-num]))
 
 (defn render-router-ev [e]
@@ -121,7 +121,7 @@
       :class (class-names {:route-changed (and (= :router (:type e))
                                                (= :route-changed (:name e)))
                            :pause (= :pause (:type e))})}
-     (when (not= "nil" (:payload e))
+     (when (:payload e)
        [-expand-event-btn {:on-click #(<cmd ctx :toggle-expanded [app-name (:id e)])} "Toggle Payload"])
      (case (:type e)
        :controller (render-controller-ev e)
@@ -132,7 +132,7 @@
        (str (:type e) (:direction e) (:topic e) (:name e)))
  
      (when expanded?
-       [:pre.h3.mt2.mr2.mb0 (:payload e)])]))
+       [:pre.h3.mt2.mr2.mb0 (:processed-payload e)])]))
 
 (defn measure-row [ctx app-name e this]
   (let [dom-node (r/dom-node this)

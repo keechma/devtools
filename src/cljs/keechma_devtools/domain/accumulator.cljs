@@ -69,13 +69,30 @@
          store)))))
 
 (defn process-event-payload [event]
-  (update event :payload #(str/trim (with-out-str (fipp-edn/pprint %)))))
+  (assoc event :processed-payload (str/trim (with-out-str (fipp-edn/pprint (:payload event))))))
+
+(defn insert-pause-event [store e]
+  (let [app-version (get-in e [:app :version])
+        prev-events (get-in store [:versions app-version :events])
+        prev-event (last prev-events)
+        prev-created-at (get-in prev-event [:cmd-info :created-at])
+        now (.getTime (js/Date.))]
+    (if (and prev-created-at (> (- now prev-created-at) 2000))
+      (let [batch-num (inc (count (filter #(= :pause (:type %)) prev-events)))
+            pause-event {:id (gensym "pause")
+                         :type :pause
+                         :payload [batch-num now]
+                         :severity :info}]
+        (update-in store [:versions app-version :events] conj pause-event))
+      store)))
 
 (defn store-event-if-app-exists [store e]
   (let [app-version (get-in e [:app :version])
         event (:event e)]
     (if (event-has-registered-app? store e)
-      (update-in store [:versions app-version :events] conj (process-event-payload event))
+      (-> store
+          (insert-pause-event e)
+          (update-in [:versions app-version :events] conj (process-event-payload event)))
       store)))
 
 (defn store-event [store e]

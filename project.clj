@@ -6,7 +6,7 @@
                  [keechma/toolbox "0.1.17" :exclusions [cljsjs/react-with-addons cljsjs/react-dom cljsjs/react-dom-server]]
                  [garden "1.3.2"]
                  [org.clojars.mihaelkonjevic/garden-basscss "0.1.0"]
-                 [com.taoensso/sente "1.11.0"]
+                 [cljsjs/socket-io "2.0.1-0"]
                  [binaryage/oops "0.6.2"]
                  [com.cognitect/transit-cljs "0.8.256"]
                  [fipp "0.6.8"]]
@@ -21,7 +21,8 @@
                                     "target"
                                     "test/js"]
 
-  :figwheel {:css-dirs ["resources/public/css"]}
+  :figwheel {:css-dirs ["resources/public/css"]
+             :server-port 3450}
 
 
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}

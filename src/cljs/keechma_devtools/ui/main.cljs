@@ -1,29 +1,3 @@
-;; (ns keechma-devtools.ui.main
-;;   (:require [keechma.ui-component :as ui]
-;;             [keechma.toolbox.ui :refer [sub> <cmd]]))
-
-;; (defn render-app-version [version app]
-;;   [:div
-;;    [:h2 {:style {:position "sticky" :top "20px" :background "red"}} version]
-;;    [:ul
-;;     (map (fn [e]
-;;            ^{:key (:id e)} [:li (pr-str e)])
-;;          (:events app))]])
-
-;; (defn render [ctx]
-;;   (let [events (sub> ctx :events)]    
-;;     [:div
-;;      [:h1 (get-in events [:state :name])]
-;;      [:hr]
-;;      (map (fn [version]
-;;             ^{:key version} [render-app-version version (get-in events [:versions version])])
-;;           (get-in events [:state :versions]))]))
-
-;; (def component
-;;   (ui/constructor {:renderer render
-;;                    :subscription-deps [:events]}))
-
-
 (ns keechma-devtools.ui.main
   (:require
    [keechma.ui-component :as ui]
@@ -35,11 +9,11 @@
    [keechma-devtools.ui.graph :as graph]
    [keechma.toolbox.util :refer [class-names]]
    [fipp.edn :as fipp-edn]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [oops.core :refer [oget ocall]]))
 
 (defn scroll-to-bottom [this]
-  (let [dom-node (r/dom-node this)]
-    (oset! dom-node "scrollTop" (oget dom-node "scrollHeight"))))
+  (ocall js/window "scrollTo" 0 (oget js/window "document.body.scrollHeight")))
 
 (def base-graph-config
   {:height-factor 40

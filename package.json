@@ -7,5 +7,12 @@
     "karma": "^2.0.4",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cljs-test": "^0.1.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "dashdash": "^1.14.1",
+    "express": "^4.16.3",
+    "socket.io": "^2.0.1"
   }
 }
