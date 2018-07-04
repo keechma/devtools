@@ -1,0 +1,11 @@
+{
+  "name": "keechma-devtools",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "karma": "^2.0.4",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-cljs-test": "^0.1.0"
+  }
+}
