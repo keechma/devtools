@@ -31,7 +31,10 @@
                       (when @first-run?
                         (swap! first-run? not)
                         (put! collector-chan [app-name :reporter nil nil :clear nil nil nil]))
-                      (put! collector-chan event)))]
+                      (put! collector-chan event)))
+         cleanup (fn [app-config]
+                   (close! collector-chan)
+                   app-config)]
      (go-loop [events []]
        (let [[val channel] (alts! [collector-chan (timeout 50)])]
          (if (= collector-chan channel)
@@ -40,6 +43,7 @@
            (do
              (when (seq events) (send-events config events))
              (recur [])))))
+    
      (-> app-config
-         (assoc :reporter reporter)
-         (reg-on-stop #(close! collector-chan))))))
+         (reg-on-stop cleanup)
+         (assoc :reporter reporter)))))
