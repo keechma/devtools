@@ -22,7 +22,7 @@
                          :params {:body payload}})))
 
 (defn install
-  ([app-config] (install app-config {:url "http://localhost:3000/e"}))
+  ([app-config] (install app-config {:url "http://localhost:4567/e"}))
   ([app-config config]
    (let [collector-chan (chan)
          reporter (fn [app-name type direction topic name payload cmd-info severity]

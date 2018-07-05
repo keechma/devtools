@@ -19,6 +19,8 @@ try {
   process.exit(1);
 }
 
+var port = opts.port || 4567;
+
 app.use(express.static(path.join(__dirname, "..", "resources", "public")));
 app.use(bodyParser.json());
 app.use(cors());
@@ -28,4 +30,6 @@ app.post("/e", function(req, res, next) {
   res.json({});
 });
 
-server.listen(opts.port || 4567);
+server.listen(port);
+
+console.log("Keechma Devtools started on port: " + port);

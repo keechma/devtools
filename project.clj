@@ -1,4 +1,4 @@
-(defproject keechma-devtools "0.0.1"
+(defproject keechma/devtools "0.0.2"
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [reagent "0.8.1"]
@@ -13,7 +13,7 @@
 
   :min-lein-version "2.5.3"
 
-  :source-paths ["src/clj"]
+  :source-paths ["src/clj" "src/cljs"]
 
   :plugins [[lein-cljsbuild "1.1.7"]]
 

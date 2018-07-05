@@ -7,3 +7,5 @@
 /*.log
 out
 /node_modules
+pom.xml
+pom.xml.asc
