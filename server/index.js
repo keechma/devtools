@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var dashdash = require("dashdash");
 var express = require("express");
 var app = express();
@@ -22,9 +24,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.post("/e", function(req, res, next) {
-  console.log(typeof req.body.body, req.body.body);
   io.emit("event", req.body.body);
   res.json({});
 });
 
-server.listen(opts.port || 3000);
+server.listen(opts.port || 4567);

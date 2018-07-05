@@ -1,6 +1,6 @@
-(ns keechma-devtools.domain.accumulator-test
+(ns keechma.devtools.domain.accumulator-test
   (:require [cljs.test :refer-macros [deftest testing is]]
-            [keechma-devtools.domain.accumulator :as a]))
+            [keechma.devtools.domain.accumulator :as a]))
 
 (def e-app-start
   {:app {:name :application :version :v1}
@@ -82,7 +82,7 @@
                                          :keechma.toolbox.forms.core/forms
                                          :keechma.toolbox.forms.mount-controller/id}
                           :state :started
-                          :events [(:event e-app-start)]
+                          :events (map a/process-event-payload [(:event e-app-start)])
                           :running-controllers {}
                           :watched #{}
                           :ignored #{}}}})))
@@ -99,7 +99,7 @@
                                          :keechma.toolbox.forms.core/forms
                                          :keechma.toolbox.forms.mount-controller/id}
                           :state :stopped
-                          :events [(:event e-app-start) (:event e-app-stop)]
+                          :events (map a/process-event-payload [(:event e-app-start) (:event e-app-stop)])
                           :running-controllers {}
                           :watched #{}
                           :ignored #{}}}})))
@@ -117,7 +117,7 @@
                                            :keechma.toolbox.forms.core/forms
                                            :keechma.toolbox.forms.mount-controller/id}
                             :state :started
-                            :events [(:event e-app-start)]
+                            :events (map a/process-event-payload [(:event e-app-start)])
                             :running-controllers {}
                             :watched #{}
                             :ignored #{}}}}))))
@@ -135,7 +135,7 @@
                                            :keechma.toolbox.forms.core/forms
                                            :keechma.toolbox.forms.mount-controller/id}
                             :state :started
-                            :events [(:event e-app-start)]
+                            :events (map a/process-event-payload [(:event e-app-start)])
                             :running-controllers {}
                             :watched #{}
                             :ignored #{}}
@@ -147,7 +147,7 @@
                                            :keechma.toolbox.forms.core/forms
                                            :keechma.toolbox.forms.mount-controller/id}
                             :state :started
-                            :events [(:event e-app-start-2)]
+                            :events (map a/process-event-payload [(:event e-app-start-2)])
                             :running-controllers {}
                             :watched #{}
                             :ignored #{}}}}))))
@@ -166,7 +166,7 @@
                                            :keechma.toolbox.forms.core/forms
                                            :keechma.toolbox.forms.mount-controller/id}
                             :state :started
-                            :events [(:event e-app-start-2)]
+                            :events (map a/process-event-payload [(:event e-app-start-2)])
                             :running-controllers {}
                             :watched #{}
                             :ignored #{}}
@@ -178,7 +178,7 @@
                                            :keechma.toolbox.forms.core/forms
                                            :keechma.toolbox.forms.mount-controller/id}
                             :state :started
-                            :events [(:event e-app-start-3)]
+                            :events (map a/process-event-payload [(:event e-app-start-3)])
                             :running-controllers {}
                             :watched #{}
                             :ignored #{}}}}))))
@@ -196,7 +196,7 @@
                                            :keechma.toolbox.forms.core/forms
                                            :keechma.toolbox.forms.mount-controller/id}
                             :state :started
-                            :events [(:event e-app-start) (:event e-route-changed)]
+                            :events (map a/process-event-payload [(:event e-app-start) (:event e-route-changed)])
                             :running-controllers {}
                             :watched #{}
                             :ignored #{}}}}))))
@@ -213,7 +213,7 @@
                                          :keechma.toolbox.forms.core/forms
                                          :keechma.toolbox.forms.mount-controller/id}
                           :state :started
-                          :events [(:event e-app-start) (:event e-running-controllers)]
+                          :events (map a/process-event-payload [(:event e-app-start) (:event e-running-controllers)])
                           :running-controllers {:redirect {:page "editor"}
                                                 :initializer true
                                                 :user-actions true
@@ -237,7 +237,7 @@
                                            :keechma.toolbox.forms.core/forms
                                            :keechma.toolbox.forms.mount-controller/id}
                             :state :started
-                            :events [(:event e-app-start) (:event e-running-controllers)]
+                            :events (map a/process-event-payload [(:event e-app-start) (:event e-running-controllers)])
                             :running-controllers {:redirect {:page "editor"}
                                                   :initializer true
                                                   :user-actions true

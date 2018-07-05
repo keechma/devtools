@@ -1,8 +1,8 @@
-(ns keechma-devtools.ui.graph
+(ns keechma.devtools.ui.graph
   (:require
    [keechma.ui-component :as ui]
    [keechma.toolbox.css.core :refer-macros [defelement]]
-   [keechma-devtools.util :refer [index-of]]
+   [keechma.devtools.util :refer [index-of]]
    [garden.color :as color]
    [goog.string :as gstring]
    [keechma.toolbox.ui :refer [<cmd sub>]]))
@@ -115,9 +115,10 @@
 
 (defn main->controller-line-name [e]
   (let [topic (:topic e)
-        ev-name (:name e)]
+        ev-name (:name e)
+        ev-payload (:payload e)]
     (case (:type e)
-      :app [(first ev-name) :lifecycle (last ev-name)]
+      :app (flatten [ev-name])
       :component ev-name
       :controller (flatten [topic ev-name]))))
 

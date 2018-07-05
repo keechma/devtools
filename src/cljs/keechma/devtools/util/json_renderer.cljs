@@ -1,4 +1,4 @@
-(ns keechma-devtools.util.json-renderer
+(ns keechma.devtools.util.json-renderer
   (:require [clojure.string :as str]
             [keechma.toolbox.css.core :refer-macros [defelement]]))
 

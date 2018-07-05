@@ -1,4 +1,4 @@
-(ns keechma-devtools.edb
+(ns keechma.devtools.edb
   (:require [entitydb.core]
             [keechma.toolbox.edb :refer-macros [defentitydb]]))
 

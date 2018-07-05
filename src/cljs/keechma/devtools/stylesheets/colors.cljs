@@ -1,4 +1,4 @@
-(ns keechma-devtools.stylesheets.colors
+(ns keechma.devtools.stylesheets.colors
   (:require [garden.color :as color]))
 
 (defn make-color-variations [colors]

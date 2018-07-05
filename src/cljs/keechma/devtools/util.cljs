@@ -1,4 +1,4 @@
-(ns keechma-devtools.util)
+(ns keechma.devtools.util)
 
 (defn index-of [coll item]
   (loop [c coll 

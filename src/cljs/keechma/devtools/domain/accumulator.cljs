@@ -1,4 +1,4 @@
-(ns keechma-devtools.domain.accumulator
+(ns keechma.devtools.domain.accumulator
   (:require [clojure.string :as str]
             [fipp.edn :as fipp-edn]))
 
@@ -102,9 +102,21 @@
       (on-running-controllers e)
       (store-event-if-app-exists e)))
 
+(defn reporter-clear [app-db events]
+  (let [first-ev (first events)]
+    (if (and (= :reporter (get-in first-ev [:event :type]))
+             (= :clear (get-in first-ev [:event :name])))
+      {:events (rest events)
+       :app-db (-> app-db
+                   (assoc-in [:kv :events] {})
+                   (assoc-in [:kv :row-dimensions] {}))}
+      {:events events
+       :app-db app-db})))
+
 (defn store-events [app-db events]
-  (assoc-in
-   app-db [:kv :events]
-   (reduce (fn [acc e] (store-event acc e))
-           (or (get-in app-db [:kv :events]) {})
-           events)))
+  (let [{:keys [app-db events]} (reporter-clear app-db events)]
+    (assoc-in
+     app-db [:kv :events]
+     (reduce (fn [acc e] (store-event acc e))
+             (or (get-in app-db [:kv :events]) {})
+             events))))

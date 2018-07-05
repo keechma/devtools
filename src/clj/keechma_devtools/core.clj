@@ -1,1 +1,1 @@
-(ns keechma-devtools.core)
+(ns keechma.devtools.core)

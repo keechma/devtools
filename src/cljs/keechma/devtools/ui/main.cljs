@@ -1,12 +1,12 @@
-(ns keechma-devtools.ui.main
+(ns keechma.devtools.ui.main
   (:require
    [keechma.ui-component :as ui]
    [keechma.toolbox.css.core :refer-macros [defelement]]
    [keechma.toolbox.ui :refer [sub> <cmd]]
    [reagent.core :as r]
    [oops.core :refer [oget oset!]]
-   [keechma-devtools.util.json-renderer :as jr]
-   [keechma-devtools.ui.graph :as graph]
+   [keechma.devtools.util.json-renderer :as jr]
+   [keechma.devtools.ui.graph :as graph]
    [keechma.toolbox.util :refer [class-names]]
    [fipp.edn :as fipp-edn]
    [clojure.string :as str]
@@ -29,9 +29,9 @@
   )
 
 (defelement -app-title-wrap
-  :class [:bg-midnightblue :px2 :h1 :bd-black :c-white]
-  :style {:height "100px"
-          :line-height "50px"
+  :class [:bg-midnightblue :px2 :h2 :bd-black :c-white]
+  :style {:height "80px"
+          :line-height "40px"
           :position "sticky"
           :z-index 1000
           :top 0
@@ -58,7 +58,7 @@
 (defelement -running-controllers-wrap
   :class [:absolute :left-0 :right-0 :bd-midnightblue-l]
   :style {:height "30px"
-          :top "50px"
+          :top "40px"
           :border-top-style "solid"
           :border-top-width "1px"})
 
@@ -66,7 +66,7 @@
   :tag :ul
   :class [:m0]
   :style {:padding-left "20px"
-          :padding-top "14px"
+          :padding-top "9px"
           :list-style "none"})
 
 (defelement -controller-list-item

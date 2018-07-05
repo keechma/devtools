@@ -1,4 +1,4 @@
-(defproject keechma-devtools "0.1.0-SNAPSHOT"
+(defproject keechma-devtools "0.0.1"
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [reagent "0.8.1"]
@@ -41,8 +41,8 @@
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs"]
-     :figwheel     {:on-jsload "keechma-devtools.core/reload"}
-     :compiler     {:main                 keechma-devtools.core
+     :figwheel     {:on-jsload "keechma.devtools.core/reload"}
+     :compiler     {:main                 keechma.devtools.core
                     :optimizations        :none
                     :output-to            "resources/public/js/app.js"
                     :output-dir           "resources/public/js/dev"
@@ -57,7 +57,7 @@
 
     {:id           "min"
      :source-paths ["src/cljs"]
-     :compiler     {:main            keechma-devtools.core
+     :compiler     {:main            keechma.devtools.core
                     :optimizations   :advanced
                     :output-to       "resources/public/js/app.js"
                     :output-dir      "resources/public/js/min"
@@ -69,6 +69,6 @@
      :source-paths ["src/cljs" "test/cljs"]
      :compiler     {:output-to     "resources/public/js/test.js"
                     :output-dir    "resources/public/js/test"
-                    :main          keechma-devtools.runner
+                    :main          keechma.devtools.runner
                     :optimizations :none}}
     ]})

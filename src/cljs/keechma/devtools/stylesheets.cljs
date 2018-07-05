@@ -1,11 +1,11 @@
-(ns keechma-devtools.stylesheets
+(ns keechma.devtools.stylesheets
   (:require [garden-basscss.core :as core]
             [garden-basscss.vars :refer [vars]]
             [garden.core :as garden]
             [garden.units :refer [em rem px px-]]
             [garden.stylesheet :refer [at-media]]
             [keechma.toolbox.css.core :as toolbox-css]
-            [keechma-devtools.stylesheets.colors :as colors]
+            [keechma.devtools.stylesheets.colors :as colors]
             [clojure.string :refer [split]])
   (:require-macros [garden.def :refer [defkeyframes]]))
 

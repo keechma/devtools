@@ -1,4 +1,4 @@
-(ns keechma-devtools.domain.processor
+(ns keechma.devtools.domain.processor
   (:require [cognitect.transit :as t]
             [cljs.reader :refer [read-string]]))
 

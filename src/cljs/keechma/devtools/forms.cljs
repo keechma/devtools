@@ -1,4 +1,4 @@
-(ns keechma-devtools.forms)
+(ns keechma.devtools.forms)
 
 (def forms {})
 (def forms-automount-fns {})

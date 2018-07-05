@@ -1,16 +1,16 @@
-(ns keechma-devtools.ui.event
+(ns keechma.devtools.ui.event
   (:require
    [keechma.ui-component :as ui]
    [keechma.toolbox.css.core :refer-macros [defelement]]
    [keechma.toolbox.ui :refer [sub> <cmd]]
    [reagent.core :as r]
    [oops.core :refer [oget oset!]]
-   [keechma-devtools.util.json-renderer :as jr]
-   [keechma-devtools.ui.graph :as graph]
+   [keechma.devtools.util.json-renderer :as jr]
+   [keechma.devtools.ui.graph :as graph]
    [keechma.toolbox.util :refer [class-names]]))
 
 (defelement -event-wrap
-  :class [:monospaced :h6 :bd-clouds :py2]
+  :class [:monospaced :h5 :bd-clouds :py2]
   :style [{:border-bottom-width "1px"
            :border-bottom-style "solid"}
           [:&:hover {:background "#f9f9f9"}]
@@ -121,9 +121,9 @@
       :class (class-names {:route-changed (and (= :router (:type e))
                                                (= :route-changed (:name e)))
                            :pause (= :pause (:type e))})}
-     (when (:payload e)
+     (when (and (:payload e) (not= :pause type))
        [-expand-event-btn {:on-click #(<cmd ctx :toggle-expanded [app-name (:id e)])} "Toggle Payload"])
-     (case (:type e)
+     (case type
        :controller (render-controller-ev e)
        :component (render-component-ev e)
        :app (render-app-ev e)
@@ -135,15 +135,18 @@
        [:pre.h3.mt2.mr2.mb0 (:processed-payload e)])]))
 
 (defn measure-row [ctx app-name e this]
-  (let [dom-node (r/dom-node this)
-        client-rect (.getBoundingClientRect dom-node)
-        offset-top (.-offsetTop dom-node)
-        current-dimensions {:y1 offset-top :y2 (+ offset-top (.-height client-rect))}
-        prev-dimensions (get-in (sub> ctx :row-dimensions) [app-name (:id e)])]
-    (when (not= current-dimensions prev-dimensions)
-      (<cmd ctx :row-dimensions {:id (:id e)
-                                 :app-name app-name
-                                 :dimensions current-dimensions}))))
+  (js/setTimeout
+   (fn []
+     (let [dom-node (r/dom-node this)
+           client-rect (.getBoundingClientRect dom-node)
+           offset-top (.-offsetTop dom-node)
+           current-dimensions {:y1 offset-top :y2 (+ offset-top (.-height client-rect))}
+           prev-dimensions (get-in (sub> ctx :row-dimensions) [app-name (:id e)])]
+       (when (not= current-dimensions prev-dimensions)
+         (<cmd ctx :row-dimensions {:id (:id e)
+                                    :app-name app-name
+                                    :dimensions current-dimensions}))))
+   1))
 
 (defn render [ctx props app-name e]
   (r/create-class

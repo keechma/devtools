@@ -1,9 +1,9 @@
-(ns keechma-devtools.controllers.consumer
+(ns keechma.devtools.controllers.consumer
   (:require [keechma.toolbox.pipeline.core :as pp :refer-macros [pipeline!]]
             [keechma.toolbox.pipeline.controller :as pp-controller]
-            [keechma-devtools.fixtures :refer [fixtures]]
-            [keechma-devtools.domain.processor :refer [process-event-batch]]
-            [keechma-devtools.domain.accumulator :refer [store-events]]
+            [keechma.devtools.fixtures :refer [fixtures]]
+            [keechma.devtools.domain.processor :refer [process-event-batch]]
+            [keechma.devtools.domain.accumulator :refer [store-events]]
             [keechma.controller :as controller]
             [cljs.core.async :refer [<!]]
             [cljsjs.socket-io]
@@ -31,6 +31,7 @@
 (defmethod controller/params Controller [_ _] true)
 
 (defmethod controller/handler Controller [this app-db-atom in-chan _]
+  ;;(reset! app-db-atom (store-events @app-db-atom (process-event-batch fixtures)))
   (let [disconnect-io (connect-io this)]
     (go-loop []
       (let [[cmd args] (<! in-chan)]

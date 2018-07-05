@@ -1,4 +1,4 @@
-(ns keechma-devtools.controllers.event
+(ns keechma.devtools.controllers.event
   (:require [keechma.toolbox.pipeline.core :as pp :refer-macros [pipeline!]]
             [keechma.toolbox.pipeline.controller :as controller]
             [reagent.core :as r]))
