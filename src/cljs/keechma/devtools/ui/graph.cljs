@@ -115,12 +115,14 @@
 
 (defn main->controller-line-name [e]
   (let [topic (:topic e)
+        type (:type e)
         ev-name (:name e)
         ev-payload (:payload e)]
-    (case (:type e)
+    (case type
       :app (flatten [ev-name])
-      :component ev-name
-      :controller (flatten [topic ev-name]))))
+      :component (last ev-name)
+      :controller (flatten [topic ev-name])
+      nil)))
 
 (defn calculate-main->controllers-connectors [events controllers]
   (let [indexed-events (map-indexed (fn [idx e] [idx e]) events)]
