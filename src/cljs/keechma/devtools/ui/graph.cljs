@@ -102,9 +102,7 @@
 (defn opening-main->controller-event? [e]
   (let [type (:type e)
         topic (:topic e)]
-    (or (and (= :app type)
-             (= :controller topic))
-        (= :component type))))
+    (not= :controller type)))
 
 (defn closing-main->controller-event? [e]
   (= :controller (:type e)))
@@ -132,20 +130,14 @@
                  (let [connector-key (main->controller-line-name e)
                        open? (opening-main->controller-event? e)]
                    (if open?
-                     (let [prev-lines (or (get-in acc [:open connector-key]) [])]
-                       (assoc-in acc [:open connector-key]
-                                 (vec (conj prev-lines
-                                            (build-current-connector-line {} idx controllers e open?)))))
-                     (let [open-lines (get-in acc [:open connector-key])
-                           current-line (first open-lines)
-                           rest-lines (rest open-lines)
+                     (let [prev-lines (:open acc)]
+                       (assoc-in acc [:open (:id e)] (build-current-connector-line {} idx controllers e open?)))
+                     (let [current-line (get-in acc [:open (get-in e [:cmd-info :origin-id])])
                            closed-lines (or (get-in acc [:closed connector-key]) [])]
                        (if current-line
-                         (-> acc
-                             (assoc-in [:open connector-key] rest-lines)
-                             (assoc-in [:closed connector-key]
-                                       (vec (conj closed-lines
-                                                  (build-current-connector-line current-line idx controllers e false)))))
+                         (assoc-in acc [:closed connector-key]
+                                   (vec (conj closed-lines
+                                              (build-current-connector-line current-line idx controllers e false))))
                          acc))))
                  acc)
                  ) {} indexed-events))))
@@ -183,6 +175,14 @@
     [:svg {:height (str height "px")
            :width (str width "px")}
      [:defs
+      [:marker {:id (str "arrow-black")
+                              :key (str "arrow-black")
+                              :orient "auto"
+                              :marker-width (* 1.5 stroke-width)
+                              :marker-height (* 3 stroke-width)
+                              :ref-x "5"
+                              :ref-y "3"}
+       [:path {:d "M0,0 V6 L3,3 Z" :fill "black"}]]
       (doall (map (fn [c]
                     [:marker {:id (str "arrow-" (name c))
                               :key (str "arrow-" (name c))
@@ -200,6 +200,8 @@
              :y2 height
              :stroke "black"
              :stroke-width stroke-width}] 
+
+     ;; Controller vertical lines
      [:g (doall (map (fn [{:keys [x1 x2 y1 y2 key stroke ev1-id ev2-id]}]
                        [:line {:key key
                                :x1 (+ (/ width-factor 2) (* width-factor x1))
@@ -209,31 +211,8 @@
                                :stroke-width stroke-width
                                :stroke stroke}])
                      (flatten (vals controller-connectors))))]
-     [:g (doall (map (fn [{:keys [x1 x2 y1 y2 key stroke ev1-id ev2-id]}]
-                       [:path
-                        {:d (make-connector-path {:x1 (/ width-factor 2)
-                                                  :x2 (+ (/ width-factor 2) (* width-factor x2))
-                                                  :y1 (get-top ev1-id)
-                                                  :y2 (get-top ev2-id)})
-                         :key key
-                         :stroke "white"
-                         :stroke-width (* 3 stroke-width)
-                         :fill "transparent"}])
-                     (remove nil? (flatten (vals connectors)))))]
-
-     [:g (doall (map (fn [{:keys [x1 x2 y1 y2 key stroke stroke-color-term ev1-id ev2-id]}]
-                       [:path
-                        {:d (make-connector-path {:x1 (/ width-factor 2)
-                                                  :x2 (+ (/ width-factor 2) (* width-factor x2))
-                                                  :y1 (get-top ev1-id)
-                                                  :y2 (get-top ev2-id)})
-                         :key key
-                         :stroke stroke
-                         :stroke-width stroke-width
-                         :fill "transparent"
-                         :marker-end (str "url(#arrow-" stroke-color-term ")")}])
-                     (remove nil? (flatten (vals connectors)))))]
-
+     
+     ;; White border on commands between controllers
      [:g (doall (map (fn [{:keys [x1 x2 y1 y2 key stroke stroke-color-term ev1-id ev2-id]}]
                        [:path
                         {:d (make-connector-path {:x1 (+ (/ width-factor 2) (* width-factor x1))
@@ -246,6 +225,7 @@
                          :fill "transparent"}])
                      (remove nil? (reverse (flatten (vals send-command-connectors))))))]
 
+     ;; Commands between controllers
      [:g (doall (map (fn [{:keys [x1 x2 y1 y2 key stroke stroke-color-term ev1-id ev2-id]}]
                        [:path
                         {:d (make-connector-path {:x1 (+ (/ width-factor 2) (* width-factor x1))
@@ -259,6 +239,35 @@
                          :marker-end (str "url(#arrow-" stroke-color-term ")")}])
                      (remove nil? (reverse (flatten (vals send-command-connectors))))))]
 
+     ;; White border on commands coming from the app
+     [:g (doall (map (fn [{:keys [x1 x2 y1 y2 key stroke stroke-color-term ev1-id ev2-id]}]
+                       [:path
+                        {:d (make-connector-path {:x1 (/ width-factor 2)
+                                                  :x2 (+ (/ width-factor 2) (* width-factor x2))
+                                                  :y1 (get-top ev1-id)
+                                                  :y2 (get-top ev2-id)})
+                         :key key
+                         :stroke "white"
+                         :stroke-width (* 3 stroke-width)
+                         :fill "transparent"}])
+                     (remove nil? (flatten (vals connectors)))))]
+     
+     ;; Commands coming from the app 
+     [:g (doall (map (fn [{:keys [x1 x2 y1 y2 key stroke stroke-color-term ev1-id ev2-id]}]
+                       [:path
+                        {:d (make-connector-path {:x1 (/ width-factor 2)
+                                                  :x2 (+ (/ width-factor 2) (* width-factor x2))
+                                                  :y1 (get-top ev1-id)
+                                                  :y2 (get-top ev2-id)})
+                         :key key
+                         :stroke "black"
+                         :stroke-width stroke-width
+                         :fill "transparent"
+                         :marker-end (str "url(#arrow-black)")}])
+                     (remove nil? (flatten (vals connectors)))))]
+
+
+     ;; Command circles
      [:g (doall (map-indexed (fn [idx e]
                                (when (not= :pause (:type e))
                                  [:circle {:key (:id e)

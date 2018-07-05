@@ -25,7 +25,7 @@
     {:app {:name app-name
            :version app-version}
      :event (-> event
-                (assoc :id (gensym "evid"))
+                (assoc :id (or (get-in event [:cmd-info :id]) (gensym "evid")))
                 (process-event-payload))}))
 
 (defn process-event-batch [batch]
