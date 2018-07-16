@@ -7,7 +7,8 @@
             [keechma.controller :as controller]
             [cljs.core.async :refer [<!]]
             [cljsjs.socket-io]
-            [oops.core :refer [ocall oget]])
+            [oops.core :refer [ocall oget]]
+            [cljs.pprint :refer [pprint]])
   (:require-macros [cljs.core.async.macros :refer [go-loop]]))
 
 (def io (oget js/window "io"))
@@ -25,14 +26,15 @@
     (ocall conn "on" "event" #(controller/execute controller :events %))
     #(ocall conn "disconnect")))
 
+(def recording (atom []))
 
 (defrecord Controller [])
 
 (defmethod controller/params Controller [_ _] true)
 
 (defmethod controller/handler Controller [this app-db-atom in-chan _]
-  ;;(reset! app-db-atom (store-events @app-db-atom (process-event-batch fixtures)))
-  (let [disconnect-io (connect-io this)]
+  (reset! app-db-atom (store-events @app-db-atom fixtures))
+  #_(let [disconnect-io (connect-io this)]
     (go-loop []
       (let [[cmd args] (<! in-chan)]
         (when cmd

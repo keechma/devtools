@@ -19,6 +19,9 @@
         processed-payload (read-string read-string-options payload)]
     (assoc event :payload processed-payload)))
 
+(defn process-event-name [event]
+  (update event :name #(if (vector? %) % [%])))
+
 (defn process-event [line-item]
   (let [[[app-name app-version] event-data] (split-event-line-item line-item)
         event (zipmap event-fields event-data)]

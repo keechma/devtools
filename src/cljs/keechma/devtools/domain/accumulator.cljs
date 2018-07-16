@@ -91,7 +91,7 @@
         event (:event e)]
     (if (event-has-registered-app? store e)
       (-> store
-          (insert-pause-event e)
+          ;;(insert-pause-event e)
           (update-in [:versions app-version :events] conj (process-event-payload event)))
       store)))
 
